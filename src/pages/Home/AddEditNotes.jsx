@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import TagInput from "../../components/Input/TagInput";
+import TagInput from "../../components/Input/TagInput.jsx";
 import { MdClose } from "react-icons/md";
 import { FaClock } from "react-icons/fa";
-import axiosInstance from "../../utils/axiosInstance";
+import axiosInstance from "../../utils/axiosInstance.js";
 import { useSnackbar } from "notistack";
 import notification from "../../components/notificationsound/alert.wav";
 import { Editor } from "@tinymce/tinymce-react"; // Import TinyMCE
