@@ -1,0 +1,135 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+
+@layer base {
+
+  html{
+    font-family: 'poppins', 'sans-serif';
+  }
+
+  body{
+    background-color: #fdfeff;
+    overflow-x: hidden ;
+  }
+}
+
+@layer components{
+    .input-box{
+      @apply w-full text-sm bg-transparent border-[1.5px] px-5 py-3 rounded mb-4 outline-none
+    }
+    .btn-primary{
+      @apply w-full text-sm bg-primary text-white p-2 rounded my-1 hover:bg-blue-600
+    }
+    .icon-btn{
+      @apply text-xl text-slate-300 cursor-pointer hover:text-primary
+    }
+    .input-label{
+      @apply text-xs text-slate-400
+    }
+}
+
+@theme {
+  --color-primary: #2885ff ;
+  --color-secondary: #EF863E ;
+}
+
+body{
+     
+    background-color: #ddeefc;
+    transition: background-color 0.3s, color 0.3s;
+}
+.navc{
+ background-color: #3f85e0;
+}
+.logo{
+  font-size: xx-large;
+  font-family: fantasy;
+}
+.spanN{
+  color:#E9F1FA ;
+}
+.title{
+ 
+   font-weight: bold;
+}
+.modalinput{
+  background-color: white;
+  border-radius: 0;
+}
+input, .pass{
+  background-color: rgb(231, 239, 248, 0.5);
+  border-radius: 10px;
+  outline: none;
+  border: none;
+}
+
+.login, .signup{
+  font-weight: 800;
+  color:  #00ABE4 ;
+  text-align: center;
+  
+}
+
+.logout{
+  color:#E9F1FA;
+   
+}
+.password{
+  background-color: rgb(231, 239, 248, 0.5);
+  border-radius: 0;
+}
+
+
+
+
+body.dark-mode {
+  background-color: rgb(17, 24, 39); /* Dark grayish-black */
+
+  
+}
+
+.dark-mode .navc {
+  background-color: #1F2937; /* Dark Gray */
+  color: white;
+}
+
+
+.toggle-btn {
+  cursor: pointer;
+  font-size: 24px;
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+}
+ .dark-mode .login{
+  color : rgb(17, 24, 39)
+ }
+ .dark-mode .signup{
+  color : rgb(17, 24, 39)
+ }
+.dark-mode .btnls {
+  background-color: rgb(55, 65, 81);
+  color:rgb(209, 213, 219) ;
+ }
+ .dark-mode .linked{
+  color: rgb(55, 65, 81);
+ }
+ .dark-mode .btnls:hover{
+   background-color: rgb(111, 113, 117);
+ }
+.dark-mode .reminder{
+ color:rgb(55, 65, 81) ;
+}
+.dark-mode .editbtn{
+   background-color: rgb(55, 65, 81);
+}
+.dark-mode .tag{
+  color: rgb(55, 65, 81);
+}
+.dark-mode .editbtn:hover{
+  background-color: rgb(111, 113, 117);
+}
+
+
+
