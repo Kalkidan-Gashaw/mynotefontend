@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { MdCreate, MdDelete } from "react-icons/md";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaInfoCircle } from "react-icons/fa"; 
 import moment from "moment";
 import DOMPurify from "dompurify";
 
@@ -14,7 +14,9 @@ const NoteCard = ({
   isFavorite,
   onToggleFavorite,
   reminderTime,
+  onShowDetails, 
 }) => {
+  const [showFullContent, setShowFullContent] = useState(false); // State to control content visibility
   const sanitizedContent = DOMPurify.sanitize(content);
   const isReminderPassed = reminderTime && new Date(reminderTime) < new Date();
 
@@ -38,7 +40,9 @@ const NoteCard = ({
 
       <div className="text-gray-700 mt-2 overflow-hidden max-h-24 min-h-20">
         <p
-          className="text-sm leading-snug overflow-y-scroll"
+          className={`text-sm leading-snug ${
+            showFullContent ? "" : "max-h-24 overflow-hidden"
+          }`}
           dangerouslySetInnerHTML={{ __html: sanitizedContent }} // Render sanitized HTML
         />
       </div>
@@ -70,13 +74,19 @@ const NoteCard = ({
           onClick={onEdit}
           className="flex items-center justify-center w-10 h-10 bg-green-500 text-white rounded-md text-sm hover:bg-green-600 transition-colors editbtn"
         >
-          <MdCreate className="text-lg" />
+          <MdCreate className="text-lg cursor-pointer" />
         </button>
         <button
           onClick={onDelete}
           className="flex items-center justify-center w-10 h-10 bg-red-500 text-white rounded-md text-sm hover:bg-red-600 transition-colors editbtn"
         >
-          <MdDelete className="text-lg" />
+          <MdDelete className="text-lg cursor-pointer" />
+        </button>
+        <button
+          onClick={onShowDetails} // Trigger show details modal
+          className="flex items-center justify-center w-10 h-10 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600 transition-colors detail"
+        >
+          <FaInfoCircle className="text-lg cursor-pointer detail" />
         </button>
       </div>
     </div>
