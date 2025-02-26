@@ -8,6 +8,7 @@ import Modal from "react-modal";
 import axiosInstance from "../../utils/axiosInstance.js";
 import { useSnackbar } from "notistack";
 import { FaRegFrown } from "react-icons/fa"; // Import frown icon
+import DOMPurify from "dompurify"; // Import DOMPurify for sanitizing content
 
 const Home = () => {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -15,7 +16,10 @@ const Home = () => {
     type: "add",
     data: null,
   });
-
+  const [openDetailModal, setOpenDetailModal] = useState({
+    isShown: false,
+    data: null,
+  });
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [noteToDelete, setNoteToDelete] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -23,6 +27,7 @@ const Home = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [isSearch, setIsSearch] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const [showFavorites, setShowFavorites] = useState(false); // State for showing favorites
   const navigate = useNavigate();
 
   const handelEdit = (noteDetails) => {
@@ -143,7 +148,17 @@ const Home = () => {
           handleClearSearch={handleClearSearch}
         />
 
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 ">
+          {/* Toggle button for showing favorites */}
+          <div className="flex justify-end items-center mb-2 ">
+            <button
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 show"
+              onClick={() => setShowFavorites((prev) => !prev)}
+            >
+              {showFavorites ? "Show All" : "Show Favorites"}
+            </button>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
             {isSearch && searchResults.length === 0 ? (
               <div className="flex flex-col items-center justify-center col-span-full bg-gray-100 p-6 rounded-lg shadow-md mt-4">
@@ -165,24 +180,29 @@ const Home = () => {
                 </p>
               </div>
             ) : (
-              (isSearch ? searchResults : allNotes).map((item) => (
-                <div key={item._id} className="relative">
-                  <NoteCard
-                    title={item.title}
-                    date={item.createdOn}
-                    content={item.content}
-                    tags={item.tags}
-                    onEdit={() => handelEdit(item)}
-                    onDelete={() => {
-                      setNoteToDelete(item);
-                      setShowConfirmModal(true);
-                    }}
-                    isFavorite={item.isFavorite}
-                    onToggleFavorite={() => toggleFavorite(item)}
-                    reminderTime={item.reminderTime} // Pass reminder time
-                  />
-                </div>
-              ))
+              (isSearch ? searchResults : allNotes)
+                .filter((item) => !showFavorites || item.isFavorite) // Filter based on favorite status
+                .map((item) => (
+                  <div key={item._id} className="relative">
+                    <NoteCard
+                      title={item.title}
+                      date={item.createdOn}
+                      content={item.content}
+                      tags={item.tags}
+                      onEdit={() => handelEdit(item)}
+                      onDelete={() => {
+                        setNoteToDelete(item);
+                        setShowConfirmModal(true);
+                      }}
+                      isFavorite={item.isFavorite}
+                      onToggleFavorite={() => toggleFavorite(item)}
+                      reminderTime={item.reminderTime}
+                      onShowDetails={() => {
+                        setOpenDetailModal({ isShown: true, data: item });
+                      }} // Show details modal
+                    />
+                  </div>
+                ))
             )}
           </div>
         </div>
@@ -241,12 +261,43 @@ const Home = () => {
               Cancel
             </button>
             <button
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              className="px-4 py-2 bg-red-500 text-white  rounded hover:bg-red-600"
               onClick={confirmDeleteNote}
             >
               Delete
             </button>
           </div>
+        </Modal>
+
+        {/* Detail Modal */}
+        <Modal
+          isOpen={openDetailModal.isShown}
+          onRequestClose={() => {
+            setOpenDetailModal({ isShown: false, data: null });
+          }}
+          style={{
+            overlay: {
+              backgroundColor: "rgba(0,0,0,0.5)",
+            },
+          }}
+          contentLabel="Note Details"
+          className="w-[60%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-auto"
+        >
+          <h1 className="text-2xl font-semibold mb-4">
+            {openDetailModal.data?.title}
+          </h1>
+          <div
+            className="text-gray-700 mb-4"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(openDetailModal.data?.content),
+            }} // Render sanitized HTML
+          />
+          <button
+            onClick={() => setOpenDetailModal({ isShown: false, data: null })}
+            className="mt-4 cursor-pointer text-gray rounded-md  py-2"
+          >
+            Close
+          </button>
         </Modal>
       </>
     </div>
