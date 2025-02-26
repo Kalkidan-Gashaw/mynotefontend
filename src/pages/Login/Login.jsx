@@ -5,11 +5,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { validateEmail } from "../../utils/helper.js";
 import axiosInstance from "../../utils/axiosInstance.js";
 import { useSnackbar } from "notistack";
+import { FaSpinner } from "react-icons/fa"; // Import spinner icon
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // Loading state
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -26,6 +28,7 @@ const Login = () => {
     }
 
     setError(null);
+    setLoading(true); // Set loading to true
 
     try {
       const response = await axiosInstance.post("/login", { email, password });
@@ -41,11 +44,13 @@ const Login = () => {
         error.response.data.message
       ) {
         setError(error.response.data.message);
-        enqueueSnackbar(error.response.data.message, { variant: "error" }); // Show error snackbar
+        enqueueSnackbar(error.response.data.message, { variant: "error" });
       } else {
         setError("Please try again");
-        enqueueSnackbar("Please try again", { variant: "error" }); // Show generic error
+        enqueueSnackbar("Please try again", { variant: "error" });
       }
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
 
@@ -54,13 +59,13 @@ const Login = () => {
       <>
         <Navbar />
         <div className="flex items-center justify-center mt-28 o">
-          <div className="w-96  shadow-lg rounded-lg bg-white px-7 py-10 ">
+          <div className="w-96 shadow-lg rounded-lg bg-white px-7 py-10">
             <form onSubmit={handleLogin}>
               <h4 className="text-2xl mb-7 login">Login</h4>
               <input
                 type="text"
                 placeholder="Email"
-                className="w-full text-sm  px-5 py-3 rounded mb-4 outline-none"
+                className="w-full text-sm px-5 py-3 rounded mb-4 outline-none"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -75,8 +80,16 @@ const Login = () => {
                 }}
               />
               {error && <p className="text-red-500 text-xs pb-1">{error}</p>}
-              <button type="submit" className="btn-primary btnls">
-                Login
+              <button
+                type="submit"
+                className="btn-primary btnls flex items-center justify-center"
+                disabled={loading}
+              >
+                {loading ? (
+                  <FaSpinner className="animate-spin mr-2" /> // Spinner icon
+                ) : (
+                  "Login"
+                )}
               </button>
               <p className="text-sm text-center mt-4">
                 Not registered yet?{" "}
